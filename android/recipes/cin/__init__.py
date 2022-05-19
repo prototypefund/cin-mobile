@@ -1,5 +1,5 @@
 from pythonforandroid.recipe import PythonRecipe, IncludedFilesBehaviour
-from pathlib import Path
+from os import environ
 
 
 class CinRecipe(PythonRecipe):
@@ -9,5 +9,17 @@ class CinRecipe(PythonRecipe):
     site_packages_name = 'cin'
     call_hostpython_via_targetpython = False
 
-recipe = CinRecipe()
 
+class CinDevelopRecipe(IncludedFilesBehaviour, PythonRecipe):
+    depends = ['python3', 'setuptools']
+    if 'CIN_PATH' in environ:
+        src_filename = environ['CIN_PATH']
+    call_hostpython_via_targetpython = False
+    install_in_hostpython = True
+    site_packages_name = 'cin'
+
+
+if 'CIN_PATH' in environ:
+    recipe = CinDevelopRecipe()
+else:
+    recipe = CinRecipe()
